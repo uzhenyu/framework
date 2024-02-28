@@ -63,6 +63,12 @@ var globalConfig string
 
 // TODO:完成对mysql的监听
 func ListenConfig(group, dataID string) (error, string) {
+	if client == nil {
+		err := GetClient()
+		if err != nil {
+			return err, ""
+		}
+	}
 	err := client.ListenConfig(vo.ConfigParam{
 		DataId: dataID,
 		Group:  group,
