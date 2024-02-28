@@ -21,7 +21,6 @@ type mysqlConfig struct {
 
 func InitMysql(serviceName string) error {
 	mysqlCfl := Listen(serviceName)
-	logs.Info(mysqlCfl, 10101010101010101010101010)
 	m := mysqlConfig{
 		Host:     mysqlCfl.Host,
 		Port:     mysqlCfl.Port,
@@ -29,7 +28,7 @@ func InitMysql(serviceName string) error {
 		Password: mysqlCfl.Password,
 		Database: mysqlCfl.Database,
 	}
-	logs.Info(m)
+	logs.Info(m, 100)
 	type Val struct {
 		Mysql mysqlConfig `yaml:"Mysql"`
 	}
