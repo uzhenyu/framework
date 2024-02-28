@@ -40,6 +40,13 @@ func GetClient() error {
 }
 
 func GetConfig(group, dataID string) (string, error) {
+	if client == nil {
+		err := GetClient()
+		if err != nil {
+			return "", err
+		}
+	}
+
 	content, err := client.GetConfig(vo.ConfigParam{
 		DataId: dataID,
 		Group:  group,
