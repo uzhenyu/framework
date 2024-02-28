@@ -21,7 +21,7 @@ type mysqlConfig struct {
 
 func InitMysql(serviceName string) error {
 	type Val struct {
-		Mysql mysqlConfig `yaml:"mysql"`
+		Mysql mysqlConfig `yaml:"Mysql"`
 	}
 	mysqlConfigVal := Val{}
 	content, err := config.GetConfig("DEFAULT_GROUP", serviceName)
