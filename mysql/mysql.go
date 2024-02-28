@@ -20,9 +20,19 @@ type mysqlConfig struct {
 }
 
 func InitMysql(serviceName string) error {
+	mysqlCfl := Listen(serviceName)
+	m := mysqlConfig{
+		Host:     mysqlCfl.Host,
+		Port:     mysqlCfl.Port,
+		Username: mysqlCfl.Username,
+		Password: mysqlCfl.Password,
+		Database: mysqlCfl.Database,
+	}
+	logs.Info(m)
 	type Val struct {
 		Mysql mysqlConfig `yaml:"Mysql"`
 	}
+
 	mysqlConfigVal := Val{}
 	content, err := config.GetConfig("DEFAULT_GROUP", serviceName)
 	if err != nil {
