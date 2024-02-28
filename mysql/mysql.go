@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"fmt"
+	"github.com/beego/beego/v2/core/logs"
 	"github.com/uzhenyu/framework/config"
 	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
@@ -11,11 +12,11 @@ import (
 var DB *gorm.DB
 
 type mysqlConfig struct {
-	Host     string `yaml:"host"`
-	Port     string `yaml:"port"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	Database string `yaml:"database"`
+	Host     string `yaml:"Host"`
+	Port     string `yaml:"Port"`
+	Username string `yaml:"Username"`
+	Password string `yaml:"Password"`
+	Database string `yaml:"Database"`
 }
 
 func InitMysql(serviceName string) error {
@@ -44,6 +45,7 @@ func InitMysql(serviceName string) error {
 		configM.Database,
 	)
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	logs.Info(dsn, 111111111111111)
 	return err
 }
 
