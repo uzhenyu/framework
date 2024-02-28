@@ -21,6 +21,7 @@ type mysqlConfig struct {
 
 func InitMysql(serviceName string) error {
 	mysqlCfl := Listen(serviceName)
+	logs.Info(mysqlCfl, 10101010101010101010101010)
 	m := mysqlConfig{
 		Host:     mysqlCfl.Host,
 		Port:     mysqlCfl.Port,
