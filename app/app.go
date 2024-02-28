@@ -7,7 +7,7 @@ func Init(apps ...string) error {
 	for _, val := range apps {
 		switch val {
 		case "mysql":
-			err = mysql.InitMysql()
+			err = mysql.InitMysql("wzy")
 		}
 	}
 	return err
