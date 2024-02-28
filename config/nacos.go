@@ -80,6 +80,5 @@ func ListenConfig(group, dataID string) (error, string) {
 	if err != nil {
 		return err, globalConfig
 	}
-	fmt.Println(globalConfig, 8798798)
 	return nil, globalConfig
 }
