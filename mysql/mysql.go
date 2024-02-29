@@ -21,6 +21,7 @@ type mysqlConfig struct {
 
 func Listen(serviceName string) *mysqlConfig {
 	_, globalConfig := config.ListenConfig("DEFAULT_GROUP", serviceName)
+	logs.Info(globalConfig, 110)
 	if globalConfig != "" {
 		data := &mysqlConfig{}
 		yamlData := []byte(globalConfig)
