@@ -36,7 +36,7 @@ func Listen(serviceName string) *mysqlConfig {
 
 func InitMysql(serviceName string) error {
 	mysqlCfl := Listen(serviceName)
-	logs.Info(mysqlCfl, 00000000000000000000000000000)
+	logs.Info(mysqlCfl, 0101010101010101010)
 	if mysqlCfl != nil {
 		type Val struct {
 			Mysql mysqlConfig `yaml:"Mysql"`
@@ -62,6 +62,13 @@ func InitMysql(serviceName string) error {
 			configM.Port,
 			configM.Database,
 		)
+
+		// 关闭原有的数据库连接
+		if DB != nil {
+			sqlDB, _ := DB.DB()
+			sqlDB.Close()
+		}
+
 		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 		logs.Info(dsn, 111111111111111)
 		return err
