@@ -84,7 +84,15 @@ func ListenConfig(group, dataID string) (error, string) {
 		},
 	})
 	if err != nil {
-		return err, globalConfig
+		return err, getGlobalConfig()
 	}
-	return nil, globalConfig
+	return nil, getGlobalConfig()
+}
+
+// 获取全局配置的函数
+func getGlobalConfig() string {
+	if globalConfig == "" {
+		return ""
+	}
+	return globalConfig
 }
