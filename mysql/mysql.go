@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"fmt"
-	"github.com/beego/beego/v2/core/logs"
 	"github.com/uzhenyu/framework/config"
 	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
@@ -21,7 +20,6 @@ type mysqlConfig struct {
 
 func Listen(serviceName string) *mysqlConfig {
 	globalConfig, _ := config.ListenConfig("DEFAULT_GROUP", serviceName)
-	logs.Info(globalConfig, 110)
 	if globalConfig != "" {
 		data := &mysqlConfig{}
 		yamlData := []byte(globalConfig)
@@ -36,7 +34,6 @@ func Listen(serviceName string) *mysqlConfig {
 
 func InitMysql(serviceName string) error {
 	mysqlCfl := Listen(serviceName)
-	logs.Info(mysqlCfl, 0101010101010101010)
 	if mysqlCfl != nil {
 		type Val struct {
 			Mysql mysqlConfig `yaml:"Mysql"`
@@ -70,7 +67,6 @@ func InitMysql(serviceName string) error {
 		}
 
 		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-		logs.Info(dsn, 111111111111111)
 		return err
 	} else {
 		return fmt.Errorf("mysqlCfl id nil")
