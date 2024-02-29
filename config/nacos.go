@@ -7,6 +7,7 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/vo"
+	"sync"
 )
 
 const ip = "127.0.0.1"
@@ -14,6 +15,7 @@ const port = 8848
 
 var client config_client.IConfigClient
 var globalConfig string
+var mutex sync.RWMutex
 
 func GetClient() error {
 	var err error
@@ -59,14 +61,32 @@ func GetConfig(group, dataID string) (string, error) {
 	return content, nil
 }
 
-func ListenConfig(group, dataID string) (error, string) {
+func ListenConfig(group, dataID string) (string, error) {
 	if client == nil {
 		err := GetClient()
 		if err != nil {
-			return err, getGlobalConfig()
+			return getGlobalConfig(), err
 		}
 	}
-	err := client.ListenConfig(vo.ConfigParam{
+
+	// 获取当前的全局配置
+	currentConfig, err := client.GetConfig(vo.ConfigParam{
+		DataId: dataID,
+		Group:  group,
+	})
+	if err != nil {
+		return getGlobalConfig(), err
+	}
+
+	// 如果当前的配置和全局配置不一致，更新全局配置
+	if currentConfig != globalConfig {
+		mutex.Lock()
+		globalConfig = currentConfig
+		mutex.Unlock()
+		fmt.Println("Update global config: " + globalConfig)
+	}
+
+	err = client.ListenConfig(vo.ConfigParam{
 		DataId: dataID,
 		Group:  group,
 		OnChange: func(namespace, group, dataId, data string) {
@@ -79,10 +99,10 @@ func ListenConfig(group, dataID string) (error, string) {
 		},
 	})
 	if err != nil {
-		return err, getGlobalConfig()
+		return getGlobalConfig(), err
 	}
 
-	return nil, getGlobalConfig()
+	return getGlobalConfig(), nil
 }
 
 func getGlobalConfig() string {
