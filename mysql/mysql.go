@@ -36,6 +36,7 @@ func Listen(serviceName string) *mysqlConfig {
 
 func InitMysql(serviceName string) error {
 	mysqlCfl := Listen(serviceName)
+	logs.Info(mysqlCfl, 00000000000000000000000000000)
 	if mysqlCfl != nil {
 		type Val struct {
 			Mysql mysqlConfig `yaml:"Mysql"`
