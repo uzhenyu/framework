@@ -46,7 +46,7 @@ func InitMysql(serviceName string) error {
 		}
 		err = yaml.Unmarshal([]byte(content), &mysqlConfigVal)
 		if err != nil {
-			fmt.Println("**********errr")
+			fmt.Println("Error: failed to unmarshal YAML content")
 			return err
 		}
 		fmt.Println(content)
