@@ -19,44 +19,53 @@ type mysqlConfig struct {
 	Database string `yaml:"Database"`
 }
 
+func Listen(serviceName string) *mysqlConfig {
+	_, globalConfig := config.ListenConfig("DEFAULT_GROUP", serviceName)
+	if globalConfig != "" {
+		data := &mysqlConfig{}
+		yamlData := []byte(globalConfig)
+		err := yaml.Unmarshal(yamlData, data)
+		if err != nil {
+			panic(err)
+		}
+		return data
+	}
+	return nil
+}
+
 func InitMysql(serviceName string) error {
 	mysqlCfl := Listen(serviceName)
-	m := mysqlConfig{
-		Host:     mysqlCfl.Host,
-		Port:     mysqlCfl.Port,
-		Username: mysqlCfl.Username,
-		Password: mysqlCfl.Password,
-		Database: mysqlCfl.Database,
-	}
-	logs.Info(m, 100)
-	type Val struct {
-		Mysql mysqlConfig `yaml:"Mysql"`
-	}
-
-	mysqlConfigVal := Val{}
-	content, err := config.GetConfig("DEFAULT_GROUP", serviceName)
-	if err != nil {
+	if mysqlCfl != nil {
+		type Val struct {
+			Mysql mysqlConfig `yaml:"Mysql"`
+		}
+		mysqlConfigVal := Val{}
+		content, err := config.GetConfig("DEFAULT_GROUP", serviceName)
+		if err != nil {
+			return err
+		}
+		err = yaml.Unmarshal([]byte(content), &mysqlConfigVal)
+		if err != nil {
+			fmt.Println("**********errr")
+			return err
+		}
+		fmt.Println(content)
+		fmt.Println(mysqlConfigVal)
+		configM := mysqlConfigVal.Mysql
+		dsn := fmt.Sprintf(
+			"%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",
+			configM.Username,
+			configM.Password,
+			configM.Host,
+			configM.Port,
+			configM.Database,
+		)
+		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		logs.Info(dsn, 111111111111111)
 		return err
+	} else {
+		return fmt.Errorf("mysqlCfl id nil")
 	}
-	err = yaml.Unmarshal([]byte(content), &mysqlConfigVal)
-	if err != nil {
-		fmt.Println("**********errr")
-		return err
-	}
-	fmt.Println(content)
-	fmt.Println(mysqlConfigVal)
-	configM := mysqlConfigVal.Mysql
-	dsn := fmt.Sprintf(
-		"%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",
-		configM.Username,
-		configM.Password,
-		configM.Host,
-		configM.Port,
-		configM.Database,
-	)
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	logs.Info(dsn, 111111111111111)
-	return err
 }
 
 func WithTX(txFc func(tx *gorm.DB) error) {
