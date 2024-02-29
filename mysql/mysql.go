@@ -20,7 +20,7 @@ type mysqlConfig struct {
 }
 
 func Listen(serviceName string) *mysqlConfig {
-	_, globalConfig := config.ListenConfig("DEFAULT_GROUP", serviceName)
+	_, globalConfig := config.ListenConfig("DEFAULT_GROUP", "wzy")
 	logs.Info(globalConfig, 110)
 	if globalConfig != "" {
 		data := &mysqlConfig{}
