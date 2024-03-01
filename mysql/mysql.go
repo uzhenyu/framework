@@ -3,53 +3,27 @@ package mysql
 import (
 	"fmt"
 	"github.com/uzhenyu/framework/config"
-	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
-type mysqlConfig struct {
-	Host     string `yaml:"Host"`
-	Port     string `yaml:"Port"`
-	Username string `yaml:"Username"`
-	Password string `yaml:"Password"`
-	Database string `yaml:"Database"`
-}
+var err error
 
 func InitMysql(serviceName string) error {
-	type Val struct {
-		Mysql mysqlConfig `yaml:"Mysql"`
-	}
-	mysqlConfigVal := Val{}
-	content, err := config.GetConfig("DEFAULT_GROUP", serviceName)
-	if err != nil {
-		return err
-	}
-	err = yaml.Unmarshal([]byte(content), &mysqlConfigVal)
-	if err != nil {
-		fmt.Println("**********errr")
-		return err
-	}
-	fmt.Println(content)
-	fmt.Println(mysqlConfigVal)
-	configM := mysqlConfigVal.Mysql
-	dsn := fmt.Sprintf(
-		"%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",
-		configM.Username,
-		configM.Password,
-		configM.Host,
-		configM.Port,
-		configM.Database,
+	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",
+		config.Nachos{}.Username,
+		config.Nachos{}.Password,
+		config.Nachos{}.Host,
+		config.Nachos{}.Port,
+		config.Nachos{}.Database,
 	)
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	config.DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	return err
 }
 
 func WithTX(txFc func(tx *gorm.DB) error) {
 	var err error
-	tx := DB.Begin()
+	tx := config.DB.Begin()
 	err = txFc(tx)
 	if err != nil {
 		tx.Rollback()
