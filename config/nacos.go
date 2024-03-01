@@ -2,20 +2,16 @@ package config
 
 import (
 	"fmt"
-	"github.com/beego/beego/v2/core/logs"
-	"github.com/nacos-group/nacos-sdk-go/clients"
-	"github.com/nacos-group/nacos-sdk-go/clients/config_client"
-	"github.com/nacos-group/nacos-sdk-go/common/constant"
-	"github.com/nacos-group/nacos-sdk-go/vo"
-	"sync"
+	"github.com/nacos-group/nacos-sdk-go/v2/clients"
+	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
+	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
+	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 )
 
 const ip = "127.0.0.1"
 const port = 8848
 
 var client config_client.IConfigClient
-var globalConfig string
-var mutex sync.RWMutex
 
 func GetClient() error {
 	var err error
@@ -24,6 +20,7 @@ func GetClient() error {
 		*constant.NewServerConfig(ip, port, constant.WithContextPath("/nacos")),
 	}
 
+	//create ClientConfig
 	cc := *constant.NewClientConfig(
 		constant.WithNamespaceId(""),
 		constant.WithTimeoutMs(5000),
@@ -43,13 +40,6 @@ func GetClient() error {
 }
 
 func GetConfig(group, dataID string) (string, error) {
-	if client == nil {
-		err := GetClient()
-		if err != nil {
-			return "", err
-		}
-	}
-
 	content, err := client.GetConfig(vo.ConfigParam{
 		DataId: dataID,
 		Group:  group,
@@ -61,53 +51,13 @@ func GetConfig(group, dataID string) (string, error) {
 	return content, nil
 }
 
-func ListenConfig(group, dataID string) (string, error) {
-	if client == nil {
-		err := GetClient()
-		if err != nil {
-			return getGlobalConfig(), err
-		}
-	}
-
-	// 获取当前的全局配置
-	currentConfig, err := client.GetConfig(vo.ConfigParam{
-		DataId: dataID,
-		Group:  group,
-	})
-	if err != nil {
-		return getGlobalConfig(), err
-	}
-
-	// 如果当前的配置和全局配置不一致，更新全局配置
-	if currentConfig != globalConfig {
-		mutex.Lock()
-		globalConfig = currentConfig
-		mutex.Unlock()
-		fmt.Println("Update global config: " + globalConfig)
-	}
-
-	err = client.ListenConfig(vo.ConfigParam{
+// TODO:完成对mysql的监听
+func ListenConfig(group, dataID string) error {
+	return client.ListenConfig(vo.ConfigParam{
 		DataId: dataID,
 		Group:  group,
 		OnChange: func(namespace, group, dataId, data string) {
-			fmt.Println("Config changed, group: " + group + ", dataId: " + dataId + ", content: " + data)
-
-			globalConfig = data
-			logs.Info("Updated global config: " + globalConfig)
-
-			// 在这里可以加入配置变化后的逻辑处理
+			fmt.Println("config changed group:" + group + ", dataId:" + dataId + ", content:" + data)
 		},
 	})
-	if err != nil {
-		return getGlobalConfig(), err
-	}
-
-	return getGlobalConfig(), nil
-}
-
-func getGlobalConfig() string {
-	if globalConfig == "" {
-		return ""
-	}
-	return globalConfig
 }
