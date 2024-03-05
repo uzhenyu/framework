@@ -49,7 +49,7 @@ func GetGrpc(serviceName string, register func(s *grpc.Server)) error {
 	s := grpc.NewServer()
 	//反射接口支持查询
 	reflection.Register(s)
-	consul.NewClient(8081, "10.2.171.80", "wzy")
+	consul.NewClient(8081, "10.2.171.13", "wzy")
 	grpc_health_v1.RegisterHealthServer(s, health.NewServer())
 
 	register(s)
