@@ -37,7 +37,7 @@ func GetGrpc(serviceName string, register func(s *grpc.Server)) error {
 	if err != nil {
 		return err
 	}
-	lis, err := net.Listen("tcp", fmt.Sprintf("%v:%v", "0.0.0.0", cof.App.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf("%v:%v", cof.App.Ip, cof.App.Port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 		return err
