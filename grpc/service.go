@@ -35,7 +35,7 @@ func getConfig(serviceName string) (*T, error) {
 }
 
 func GetGrpc(serviceName string, register func(s *grpc.Server)) error {
-	mysql.Services("127.0.0.1", 8081)
+	mysql.Services("10.2.171.13", 8081)
 	cof, err := getConfig(serviceName)
 	if err != nil {
 		return err

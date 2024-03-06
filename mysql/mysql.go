@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const ip = "127.0.0.1"
+const ip = "10.2.171.13"
 const port = 8848
 
 var DB *gorm.DB
