@@ -26,22 +26,6 @@ type Nachos struct {
 		Port     string `json:"Port"`
 		Database string `json:"Database"`
 	} `json:"Mysql"`
-	Redis struct {
-		Host string `json:"Host"`
-		Port string `json:"Port"`
-	} `json:"Redis"`
-	Es struct {
-		Host string `json:"Host"`
-		Post string `json:"Post"`
-	} `json:"Es"`
-	Gin struct {
-		Port string `json:"Port"`
-	} `json:"Gin"`
-	App struct {
-		Ip     string `json:"ip"`
-		Port   string `json:"port"`
-		Secret string `json:"secret"`
-	} `json:"app"`
 }
 
 func InitMysql(serviceName string) error {

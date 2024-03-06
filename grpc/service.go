@@ -3,11 +3,8 @@ package grpc
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/uzhenyu/framework/consul"
 	"github.com/uzhenyu/framework/mysql"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/health"
-	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
@@ -35,12 +32,12 @@ func getConfig(serviceName string) (*T, error) {
 }
 
 func GetGrpc(serviceName string, register func(s *grpc.Server)) error {
-	mysql.Services("10.2.171.13", 8081)
+	//mysql.Services("10.2.171.13", 8081)
 	cof, err := getConfig(serviceName)
 	if err != nil {
 		return err
 	}
-	lis, err := net.Listen("tcp", fmt.Sprintf("%v:%v", cof.App.Ip, cof.App.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf("%v:%v", "0.0.0.0", cof.App.Port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 		return err
@@ -49,8 +46,8 @@ func GetGrpc(serviceName string, register func(s *grpc.Server)) error {
 	s := grpc.NewServer()
 	//反射接口支持查询
 	reflection.Register(s)
-	consul.NewClient(8081, "10.2.171.13", "wzy")
-	grpc_health_v1.RegisterHealthServer(s, health.NewServer())
+	//consul.NewClient(8081, "10.2.171.13", "wzy")
+	//grpc_health_v1.RegisterHealthServer(s, health.NewServer())
 
 	register(s)
 	log.Printf("server listening at %v", lis.Addr())
