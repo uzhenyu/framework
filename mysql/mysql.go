@@ -3,6 +3,7 @@ package mysql
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/beego/beego/v2/core/logs"
 	"github.com/uzhenyu/framework/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -47,7 +48,7 @@ func InitMysql(serviceName string) error {
 	if err != nil {
 		return err
 	}
-
+	logs.Info(dsn)
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err
