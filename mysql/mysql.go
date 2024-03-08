@@ -52,13 +52,13 @@ func InitMysql(serviceName string) error {
 	if err != nil {
 		return err
 	}
-	defer func() {
-		db, err := DB.DB()
-		if err != nil {
-			return
-		}
-		_ = db.Close()
-	}()
+	//defer func() {
+	//	db, err := DB.DB()
+	//	if err != nil {
+	//		return
+	//	}
+	//	_ = db.Close()
+	//}()
 	return nil
 }
 
