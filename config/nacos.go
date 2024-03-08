@@ -41,8 +41,8 @@ func GetClient() error {
 		constant.WithNamespaceId(""),
 		constant.WithTimeoutMs(5000),
 		constant.WithNotLoadCacheAtStart(true),
-		constant.WithLogDir("/tmp/nacos/log"),
-		constant.WithCacheDir("/tmp/nacos/cache"),
+		constant.WithLogDir("log"),
+		constant.WithCacheDir("cache"),
 		constant.WithLogLevel("debug"),
 	)
 
