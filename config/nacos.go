@@ -12,9 +12,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const ip = "172.20.10.6"
-const port = 8848
-
 var DB *gorm.DB
 
 var client config_client.IConfigClient
@@ -33,7 +30,7 @@ func GetClient() error {
 	var err error
 
 	sc := []constant.ServerConfig{
-		*constant.NewServerConfig(ip, port, constant.WithContextPath("/nacos")),
+		*constant.NewServerConfig("172.20.10.6", 8848, constant.WithContextPath("/nacos")),
 	}
 
 	//create ClientConfig
