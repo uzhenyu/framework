@@ -3,8 +3,8 @@ package grpc
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/uzhenyu/framework/config"
 	"github.com/uzhenyu/framework/consul"
-	"github.com/uzhenyu/framework/mysql"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -22,7 +22,7 @@ type T struct {
 }
 
 func getConfig(serviceName string) (*T, error) {
-	configInfo, err := mysql.GetConfig("DEFAULT_GROUP", serviceName)
+	configInfo, err := config.GetConfig("DEFAULT_GROUP", serviceName)
 	if err != nil {
 		return nil, err
 	}
@@ -52,6 +52,7 @@ func GetGrpc(serviceName string, register func(s *grpc.Server)) error {
 	s := grpc.NewServer()
 	//反射接口支持查询
 	reflection.Register(s)
+	//健康检查
 	grpc_health_v1.RegisterHealthServer(s, health.NewServer())
 	register(s)
 	log.Printf("server listening at %v", lis.Addr())

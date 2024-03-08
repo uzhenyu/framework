@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/beego/beego/v2/core/logs"
+	"github.com/uzhenyu/framework/config"
 	"github.com/uzhenyu/framework/consul"
-	"github.com/uzhenyu/framework/mysql"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 func Client(toService string) (*grpc.ClientConn, error) {
-	cnfStr, err := mysql.GetConfig("DEFAULT_GROUP", toService)
+	cnfStr, err := config.GetConfig("DEFAULT_GROUP", toService)
 	if err != nil {
 		return nil, err
 	}

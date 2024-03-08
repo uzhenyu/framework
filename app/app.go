@@ -1,12 +1,13 @@
 package app
 
 import (
+	"github.com/uzhenyu/framework/config"
 	"github.com/uzhenyu/framework/mysql"
 )
 
 func Init(serviceName string, apps ...string) error {
 	var err error
-	err = mysql.GetClient()
+	err = config.GetClient()
 	if err != nil {
 		return err
 	}
