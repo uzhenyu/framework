@@ -123,8 +123,8 @@ func Services(ips string, ports int64) {
 	}
 	serverConfigs := []constant.ServerConfig{
 		{
-			IpAddr: ip,
-			Port:   port,
+			IpAddr: "172.20.10.6",
+			Port:   8848,
 		},
 	}
 	cli, _ := clients.CreateNamingClient(map[string]interface{}{
