@@ -45,7 +45,7 @@ func GetGrpc(serviceName string, register func(s *grpc.Server)) error {
 		log.Fatalf("failed to listen: %v", err)
 		return err
 	}
-	err = consul.NewClient(8081, "127.0.0.1", "wzy")
+	err = consul.NewClient(8081, "172.20.10.6", "wzy")
 	if err != nil {
 		return err
 	}
