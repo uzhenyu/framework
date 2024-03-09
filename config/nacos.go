@@ -8,6 +8,7 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
+	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -26,11 +27,14 @@ type Nachos struct {
 	} `json:"Mysql"`
 }
 
-func GetClient() error {
+func GetClient(fileName string) error {
 	var err error
-
+	err = ReadConfig(fileName)
+	if err != nil {
+		return err
+	}
 	sc := []constant.ServerConfig{
-		*constant.NewServerConfig("10.2.171.13", 8848, constant.WithContextPath("/nacos")),
+		*constant.NewServerConfig(viper.GetString("Nacos.Ip"), uint64(viper.GetInt("Nacos.Port")), constant.WithContextPath("/nacos")),
 	}
 
 	//create ClientConfig
@@ -55,10 +59,10 @@ func GetClient() error {
 	return err
 }
 
-func GetConfig(group, dataID string) (string, error) {
+func GetConfig(group, dataID, fileName string) (string, error) {
 	if client == nil {
 		// 初始化 client
-		err := GetClient()
+		err := GetClient(fileName)
 		if err != nil {
 			return "", err
 		}
@@ -112,7 +116,7 @@ func UpdateDb(config string) {
 
 }
 
-func Services(ips string, ports int64) {
+func Services(ips, fileName string, ports int64) {
 	clientConfig := constant.ClientConfig{
 		NamespaceId:         "", // 如果需要支持多namespace，我们可以场景多个client,它们有不同的NamespaceId。当namespace是public时，此处填空字符串。
 		TimeoutMs:           5000,
@@ -121,20 +125,24 @@ func Services(ips string, ports int64) {
 		CacheDir:            "/tmp/nacos/cache",
 		LogLevel:            "debug",
 	}
+	err := ReadConfig(fileName)
+	if err != nil {
+		return
+	}
 	serverConfigs := []constant.ServerConfig{
 		{
-			IpAddr: "10.2.171.13",
-			Port:   8848,
+			IpAddr: viper.GetString("Nacos.Ip"),
+			Port:   uint64(viper.GetInt("Nacos.Port")),
 		},
 	}
 	cli, _ := clients.CreateNamingClient(map[string]interface{}{
 		"serverConfigs": serverConfigs,
 		"clientConfig":  clientConfig,
 	})
-	_, err := cli.RegisterInstance(vo.RegisterInstanceParam{
+	_, err = cli.RegisterInstance(vo.RegisterInstanceParam{
 		Ip:          ips,
 		Port:        uint64(ports),
-		ServiceName: "wzy",
+		ServiceName: viper.GetString("Wzy.wzy"),
 		Weight:      10,
 		Enable:      true,
 		Healthy:     true,

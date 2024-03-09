@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/beego/beego/v2/core/logs"
+	"github.com/spf13/viper"
 	"github.com/uzhenyu/framework/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -21,13 +22,16 @@ type Nachos struct {
 	} `json:"Mysql"`
 }
 
-func InitMysql(serviceName string) error {
-	err := config.GetClient()
+func InitMysql(serviceName, fileName string) error {
+	err := config.GetClient(fileName)
 	if err != nil {
 		return err
 	}
-
-	configs, err := config.GetConfig(serviceName, "wzy")
+	err = config.ReadConfig(fileName)
+	if err != nil {
+		return err
+	}
+	configs, err := config.GetConfig(serviceName, viper.GetString("Wzy.wzy"), fileName)
 	if err != nil {
 		return err
 	}
@@ -44,7 +48,7 @@ func InitMysql(serviceName string) error {
 		nacos.Mysql.Database,
 	)
 
-	err = config.ListenConfig(serviceName, "wzy")
+	err = config.ListenConfig(serviceName, viper.GetString("Wzy.wzy"))
 	if err != nil {
 		return err
 	}

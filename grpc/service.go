@@ -3,6 +3,7 @@ package grpc
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/spf13/viper"
 	"github.com/uzhenyu/framework/config"
 	"github.com/uzhenyu/framework/consul"
 	"google.golang.org/grpc"
@@ -21,8 +22,8 @@ type T struct {
 	} `json:"app"`
 }
 
-func getConfig(serviceName string) (*T, error) {
-	configInfo, err := config.GetConfig("DEFAULT_GROUP", serviceName)
+func getConfig(serviceName, fileName string) (*T, error) {
+	configInfo, err := config.GetConfig("DEFAULT_GROUP", serviceName, fileName)
 	if err != nil {
 		return nil, err
 	}
@@ -34,18 +35,23 @@ func getConfig(serviceName string) (*T, error) {
 	return cnf, nil
 }
 
-func GetGrpc(serviceName string, register func(s *grpc.Server)) error {
+func GetGrpc(serviceName, fileName string, register func(s *grpc.Server)) error {
 	//mysql.Services("10.2.171.13", 8081)
-	cof, err := getConfig(serviceName)
+	err := config.ReadConfig(fileName)
 	if err != nil {
 		return err
 	}
+	cof, err := getConfig(serviceName, fileName)
+	if err != nil {
+		return err
+	}
+
 	lis, err := net.Listen("tcp", fmt.Sprintf("%v:%v", "0.0.0.0", cof.App.Port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 		return err
 	}
-	err = consul.NewClient(8081, "10.2.171.13", "wzy")
+	err = consul.NewClient(8081, viper.GetString("Nacos.Ip"), viper.GetString("Wzy.wzy"), fileName)
 	if err != nil {
 		return err
 	}

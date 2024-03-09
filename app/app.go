@@ -5,16 +5,16 @@ import (
 	"github.com/uzhenyu/framework/mysql"
 )
 
-func Init(serviceName string, apps ...string) error {
+func Init(serviceName, fileName string, apps ...string) error {
 	var err error
-	err = config.GetClient()
+	err = config.GetClient(fileName)
 	if err != nil {
 		return err
 	}
 	for _, val := range apps {
 		switch val {
 		case "mysql":
-			err = mysql.InitMysql(serviceName)
+			err = mysql.InitMysql(serviceName, fileName)
 			if err != nil {
 				panic(err)
 			}

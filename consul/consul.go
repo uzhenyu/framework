@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/hashicorp/consul/api"
+	"github.com/spf13/viper"
+	"github.com/uzhenyu/framework/config"
 	"net"
 )
 
@@ -25,8 +27,12 @@ func GetIp() (ip []string) {
 }
 
 // 注册
-func NewClient(port int64, address, name string) error {
-	c, err := api.NewClient(&api.Config{Address: fmt.Sprintf("%v:%v", "10.2.171.13", "8500")})
+func NewClient(port int64, address, name, fileName string) error {
+	err := config.ReadConfig(fileName)
+	if err != nil {
+		return err
+	}
+	c, err := api.NewClient(&api.Config{Address: fmt.Sprintf("%v:%v", viper.GetString("Nacos.Ip"), "8500")})
 	if err != nil {
 		return err
 	}
@@ -52,8 +58,12 @@ func NewClient(port int64, address, name string) error {
 }
 
 // 获取健康服务
-func NewClients(name string) (string, int64, error) {
-	c, err := api.NewClient(&api.Config{Address: fmt.Sprintf("%v:%v", "10.2.171.13", "8500")})
+func NewClients(name, fileName string) (string, int64, error) {
+	err := config.ReadConfig(fileName)
+	if err != nil {
+		return "", 0, err
+	}
+	c, err := api.NewClient(&api.Config{Address: fmt.Sprintf("%v:%v", viper.GetString("Nacos.Ip"), "8500")})
 	if err != nil {
 		return "", 0, err
 	}

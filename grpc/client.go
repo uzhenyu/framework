@@ -2,12 +2,14 @@ package grpc
 
 import (
 	"fmt"
+	"github.com/spf13/viper"
+	"github.com/uzhenyu/framework/config"
 	"github.com/uzhenyu/framework/consul"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func Client(toService string) (*grpc.ClientConn, error) {
+func Client(toService, fileName string) (*grpc.ClientConn, error) {
 	//cnfStr, err := config.GetConfig("DEFAULT_GROUP", toService)
 	//if err != nil {
 	//	return nil, err
@@ -18,7 +20,8 @@ func Client(toService string) (*grpc.ClientConn, error) {
 	//	return nil, err
 	//}
 	//logs.Info(cnf.App.Ip, cnf.App.Port)
-	address, port, err := consul.NewClients("wzy")
+	err := config.ReadConfig(fileName)
+	address, port, err := consul.NewClients(viper.GetString("Wzy.wzy"), fileName)
 	if err != nil {
 		return nil, err
 	}
