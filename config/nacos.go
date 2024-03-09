@@ -30,7 +30,7 @@ func GetClient() error {
 	var err error
 
 	sc := []constant.ServerConfig{
-		*constant.NewServerConfig("172.20.10.6", 8848, constant.WithContextPath("/nacos")),
+		*constant.NewServerConfig("10.2.171.13", 8848, constant.WithContextPath("/nacos")),
 	}
 
 	//create ClientConfig
@@ -123,7 +123,7 @@ func Services(ips string, ports int64) {
 	}
 	serverConfigs := []constant.ServerConfig{
 		{
-			IpAddr: "172.20.10.6",
+			IpAddr: "10.2.171.13",
 			Port:   8848,
 		},
 	}
