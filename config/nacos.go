@@ -134,7 +134,7 @@ func Services(ips string, ports int64) {
 	_, err := cli.RegisterInstance(vo.RegisterInstanceParam{
 		Ip:          ips,
 		Port:        uint64(ports),
-		ServiceName: "wzy",
+		ServiceName: "fzjh",
 		Weight:      10,
 		Enable:      true,
 		Healthy:     true,

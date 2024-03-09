@@ -18,7 +18,7 @@ func Client(toService string) (*grpc.ClientConn, error) {
 	//	return nil, err
 	//}
 	//logs.Info(cnf.App.Ip, cnf.App.Port)
-	address, port, err := consul.NewClients("wzy")
+	address, port, err := consul.NewClients("fzjh")
 	if err != nil {
 		return nil, err
 	}
