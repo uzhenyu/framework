@@ -31,6 +31,7 @@ func InitMysql(serviceName, fileName string) error {
 	if err != nil {
 		return err
 	}
+	logs.Info(viper.GetString("Wzy.wzy"))
 	configs, err := config.GetConfig(serviceName, viper.GetString("Wzy.wzy"), fileName)
 	if err != nil {
 		return err
