@@ -27,7 +27,7 @@ func InitMysql(serviceName string) error {
 		return err
 	}
 
-	configs, err := config.GetConfig(serviceName, "fzjh")
+	configs, err := config.GetConfig(serviceName, "wzy")
 	if err != nil {
 		return err
 	}
@@ -44,7 +44,7 @@ func InitMysql(serviceName string) error {
 		nacos.Mysql.Database,
 	)
 
-	err = config.ListenConfig(serviceName, "fzjh")
+	err = config.ListenConfig(serviceName, "wzy")
 	if err != nil {
 		return err
 	}
