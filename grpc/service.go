@@ -51,7 +51,7 @@ func GetGrpc(serviceName, fileName string, register func(s *grpc.Server)) error 
 		log.Fatalf("failed to listen: %v", err)
 		return err
 	}
-	err = consul.NewClient(8081, viper.GetString("Nacos.Ip"), viper.GetString("Wzy.wzy"), fileName)
+	err = consul.NewClient(8081, viper.GetString("Nacos.Ip"), viper.GetString("Wzy.DataID"), fileName)
 	if err != nil {
 		return err
 	}

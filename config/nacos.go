@@ -142,7 +142,7 @@ func Services(ips, fileName string, ports int64) {
 	_, err = cli.RegisterInstance(vo.RegisterInstanceParam{
 		Ip:          ips,
 		Port:        uint64(ports),
-		ServiceName: viper.GetString("Wzy.wzy"),
+		ServiceName: viper.GetString("Wzy.DataID"),
 		Weight:      10,
 		Enable:      true,
 		Healthy:     true,

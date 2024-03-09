@@ -18,9 +18,9 @@ type T struct {
 	} `json:"Redis"`
 }
 
-func withClient(dataID string, hand func(cli *redis.Client) error) error {
+func withClient(dataID string, hand func(cli *redis.Client) error, fileName string) error {
 	newRedis := new(T)
-	getConfig, err := config.GetConfig(dataID, "DEFAULT_GROUP")
+	getConfig, err := config.GetConfig(dataID, "DEFAULT_GROUP", fileName)
 	if err != nil {
 		return err
 	}
@@ -37,13 +37,13 @@ func withClient(dataID string, hand func(cli *redis.Client) error) error {
 	return nil
 }
 
-func Exists(ctx context.Context, dataID string, key string) (bool, error) {
+func Exists(ctx context.Context, dataID string, key string, fileName string) (bool, error) {
 	var data int64
 	var err error
 	err = withClient(dataID, func(cli *redis.Client) error {
 		data, err = cli.Exists(ctx, key).Result()
 		return err
-	})
+	}, fileName)
 	if err != nil {
 		return false, err
 	}
@@ -53,21 +53,21 @@ func Exists(ctx context.Context, dataID string, key string) (bool, error) {
 	return false, nil
 }
 
-func GetRedis(ctx context.Context, dataID string, key string) (string, error) {
+func GetRedis(ctx context.Context, dataID string, key string, fileName string) (string, error) {
 	var data string
 	var err error
 	err = withClient(dataID, func(cli *redis.Client) error {
 		data, err = cli.Get(ctx, key).Result()
 		return err
-	})
+	}, fileName)
 	if err != nil {
 		return "", err
 	}
 	return data, nil
 }
 
-func SetKey(ctx context.Context, dataID string, key string, val interface{}, duration time.Duration) error {
+func SetKey(ctx context.Context, dataID string, key string, val interface{}, duration time.Duration, fileName string) error {
 	return withClient(dataID, func(cli *redis.Client) error {
 		return cli.Set(ctx, key, val, duration).Err()
-	})
+	}, fileName)
 }

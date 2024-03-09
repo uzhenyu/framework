@@ -31,8 +31,7 @@ func InitMysql(serviceName, fileName string) error {
 	if err != nil {
 		return err
 	}
-	logs.Info(viper.GetString("Wzy.wzy"))
-	configs, err := config.GetConfig(serviceName, viper.GetString("Wzy.wzy"), fileName)
+	configs, err := config.GetConfig(serviceName, viper.GetString("Wzy.DataID"), fileName)
 	if err != nil {
 		return err
 	}
@@ -49,7 +48,7 @@ func InitMysql(serviceName, fileName string) error {
 		nacos.Mysql.Database,
 	)
 
-	err = config.ListenConfig(serviceName, viper.GetString("Wzy.wzy"))
+	err = config.ListenConfig(serviceName, viper.GetString("Wzy.DataID"))
 	if err != nil {
 		return err
 	}

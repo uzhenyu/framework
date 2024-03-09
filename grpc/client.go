@@ -21,7 +21,7 @@ func Client(toService, fileName string) (*grpc.ClientConn, error) {
 	//}
 	//logs.Info(cnf.App.Ip, cnf.App.Port)
 	err := config.ReadConfig(fileName)
-	address, port, err := consul.NewClients(viper.GetString("Wzy.wzy"), fileName)
+	address, port, err := consul.NewClients(viper.GetString("Wzy.DataID"), fileName)
 	if err != nil {
 		return nil, err
 	}
