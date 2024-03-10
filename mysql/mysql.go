@@ -47,7 +47,7 @@ func InitMysql(serviceName, fileName string) error {
 		nacos.Mysql.Port,
 		nacos.Mysql.Database,
 	)
-
+	logs.Info(viper.GetString("Wzy.DataID"))
 	err = config.ListenConfig(serviceName, viper.GetString("Wzy.DataID"))
 	if err != nil {
 		return err
