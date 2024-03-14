@@ -1,12 +1,7 @@
 package grpc
 
 import (
-	"fmt"
-	"github.com/spf13/viper"
-	"github.com/uzhenyu/framework/config"
-	"github.com/uzhenyu/framework/consul"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 func Client(toService, fileName string) (*grpc.ClientConn, error) {
@@ -20,10 +15,10 @@ func Client(toService, fileName string) (*grpc.ClientConn, error) {
 	//	return nil, err
 	//}
 	//logs.Info(cnf.App.Ip, cnf.App.Port)
-	err := config.ReadConfig(fileName)
-	address, port, err := consul.NewClients(viper.GetString("Wzy.DataID"), fileName)
-	if err != nil {
-		return nil, err
-	}
-	return grpc.Dial(fmt.Sprintf("%v:%v", address, port), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	//err := config.ReadConfig(fileName)
+	//address, port, err := consul.NewClients(viper.GetString("Wzy.DataID"), fileName)
+	//if err != nil {
+	//	return nil, err
+	//}
+	return grpc.Dial("consul://10.2.171.70:8500/"+"wzy"+"?wait=14s", grpc.WithInsecure(), grpc.WithDefaultServiceConfig(`{"LoadBalancingPolicy": "round_robin"}`))
 }
